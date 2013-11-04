@@ -28,7 +28,7 @@ namespace cpp_module {
 
 //! simple getter
 template <typename T>
-struct SimplePeopertyGetter
+struct SimplePropertyGetter
 {
 	static T& Get(T& value) { return value; }
 };
@@ -53,7 +53,7 @@ protected:
 };
 
 //! writable property
-template <typename T, class Getter = SimplePeopertyGetter<T>, class Setter = SimplePropertySetter<T>>
+template <typename T, class Getter = SimplePropertyGetter<T>, class Setter = SimplePropertySetter<T>>
 class WritableProperty : public Property<T>, private Getter, private Setter
 {
 public:
@@ -68,7 +68,7 @@ public:
 };
 
 //! readonly property
-template <typename T, class Getter = SimplePeopertyGetter<T>>
+template <typename T, class Getter = SimplePropertyGetter<T>>
 class ReadOnlyProperty : public Property<T>, private Getter
 {
 public:
