@@ -30,7 +30,7 @@ namespace cpp_module {
 template <typename T>
 struct SimplePropertyGetter
 {
-	static T& Get(T& value) { return value; }
+	static const T& Get(const T& value) { return value; }
 };
 
 //! simple setter
