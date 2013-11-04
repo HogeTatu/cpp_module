@@ -26,18 +26,18 @@
 
 namespace cpp_module {
 
-//! default getter
+//! simple getter
 template <typename T>
-struct DefaultGetter
+struct SimplePeopertyGetter
 {
-	static T Get(const T* pValue) { return *pValue; }
+	static T& Get(T& value) { return value; }
 };
 
-//! default setter
+//! simple setter
 template <typename T>
-struct DefaultSetter
+struct SimplePropertySetter
 {
-	static void Set(T* pValue, const T& var) { *pValue = T(var); }
+	static void Set(T& value, const T& var) { value = T(var); }
 };
 
 //! property
@@ -45,44 +45,39 @@ template <typename T>
 class Property
 {
 public:
-	Property() {}
-	Property(T value) : _value(value) {}
+	Property(T& value) : _value(value) {}
 	virtual ~Property() {}
 
 protected:
-	T		_value;
+	T&		_value;
 };
 
 //! writable property
-template <typename T, class Getter = DefaultGetter<T>, class Setter = DefaultSetter<T>>
+template <typename T, class Getter = SimplePeopertyGetter<T>, class Setter = SimplePropertySetter<T>>
 class WritableProperty : public Property<T>, private Getter, private Setter
 {
 public:
-	WritableProperty() : Property() {}
-	WritableProperty(T value) : Property(value) {}
+	WritableProperty(T& value) : Property(value) {}
 	virtual ~WritableProperty() {}
 
 public:
-	operator const T() const { return Get(&_value); }
+	operator const T& () const { return Get(_value); }
+	const T& operator -> () const { return Get(_value); }
 
-public:
-	WritableProperty<T, Getter, Setter>& operator = (const T& var) { Set(&_value, var); return *this; }
+	WritableProperty<T, Getter, Setter>& operator = (const T& var) { Set(_value, var); return *this; }
 };
 
 //! readonly property
-template <typename T, class Getter = DefaultGetter<T>, class Setter = DefaultSetter<T>>
-class ReadOnlyProperty : public Property<T>, private Getter, private Setter
+template <typename T, class Getter = SimplePeopertyGetter<T>>
+class ReadOnlyProperty : public Property<T>, private Getter
 {
 public:
-	ReadOnlyProperty() : Property() {}
-	ReadOnlyProperty(T value) : Property(value) {}
+	ReadOnlyProperty(T& value) : Property(value) {}
 	virtual ~ReadOnlyProperty() {}
 
 public:
-	operator const T() const { return Get(&_value); }
-
-protected:
-	ReadOnlyProperty<T, Getter, Setter>& operator = (const T& var) { Set(&_value, var); return *this; }
+	operator const T& () const { return Get(_value); }
+	const T& operator -> () const { return Get(_value); }
 };
 
 }	// end of namespace cpp_module

@@ -25,24 +25,14 @@
 #include <string>
 #include "Property.h"
 
-template <typename T>
-struct OutputLogSetter
-{
-	static void Set(T* pValue, const T& value)
-	{
-		*pValue = T(value);
-		std::cout << "set:" << value << std::endl;
-	}
-};
-
 class Sample
 {
 public:
 	Sample()
-		: foo1(1)
-		, bar1("bar1")
-		, foo2(2)
-		, bar2("bar2")
+		: _foo1(1)			, foo1(_foo1)
+		, _bar1("bar1")		, bar1(_bar1)
+		, _foo2(2)			, foo2(_foo2)
+		, _bar2("bar2")		, bar2(_bar2)
 	{}
 	
 	cpp_module::WritableProperty<int>			foo1;
@@ -50,15 +40,11 @@ public:
 	cpp_module::ReadOnlyProperty<int>			foo2;
 	cpp_module::ReadOnlyProperty<std::string>	bar2;
 
-	void setFoo1(int var)
-	{
-		foo1 = var;
-	}
-
-	void setFoo2(int var)
-	{
-		//foo2 = var;
-	}
+private:
+	int				_foo1;
+	std::string		_bar1;
+	int				_foo2;
+	std::string		_bar2;
 };
 
 void output(int var)
@@ -73,10 +59,8 @@ void output(const std::string& var)
 
 int main(int argc, char const *argv[])
 {
-	std::string str("hoge");
-	str = "hoge1";
-
 	Sample sample;
+
 	sample.foo1 = 10;
 	sample.bar1 = "sample.bar1";
 	output(sample.foo1);
